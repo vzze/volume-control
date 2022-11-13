@@ -1,0 +1,44 @@
+body {
+    margin: 5px;
+    padding: 0px;
+    background: black;
+    font-family: "Monofur", monospace;
+    font-size: 14px;
+    color: #FFFFFF;
+}
+
+ul li {
+    list-style: none;
+    margin-left: 0px;
+    padding-left: 0px;
+    margin-right: 57px;
+}
+input[type=range] {
+    -webkit-appearance: none;
+    background: none;
+}
+input[type=range]:focus {
+  outline: none;
+}
+
+.range-slider {
+  margin: 10px 0 0 0;
+}
+
+.range-slider__range {
+    display: inline-block;
+    margin-left: 10px;
+    float: right;
+}
+
+.range-slider__value {
+  display: inline-block;
+  position: absolute;
+  width: 100;
+  right: 20px;
+  color: $shade-0;
+  line-height: 20px;
+  border-radius: 3px;
+  padding: 0px 10px;
+  margin-left: 8px;
+}

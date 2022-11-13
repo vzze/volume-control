@@ -1,0 +1,30 @@
+{
+    "manifest_version": 2,
+    "name": "Volume",
+    "version": "1.0",
+
+    "description": "Volume control.",
+
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "volume@vzze"
+        }
+    },
+
+    "icons": {
+        "48": "icons/flowy.png"
+    },
+
+    "browser_action": {
+        "default_icon": "icons/flowy.png",
+        "default_title": "Volume",
+        "default_area": "navbar",
+        "browser_style": true,
+        "default_popup": "popup.html"
+    },
+    "permissions": [
+        "tabs",
+        "<all_urls>",
+        "storage"
+    ]
+}
