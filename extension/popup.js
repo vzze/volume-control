@@ -69,7 +69,7 @@ browser.storage.sync.get("volumes", async function(vols) {
 
     const main = await browser.windows.getCurrent().catch(() => {});
 
-    browser.tabs.query({}, function(tabs) {
+    browser.tabs.query({}, async function(tabs) {
         let list = document.getElementById("tbs")
         if(vols.volumes) volumes = vols.volumes;
 
@@ -84,6 +84,8 @@ browser.storage.sync.get("volumes", async function(vols) {
                 list.appendChild(newLi)
             }
         })
+
+        await browser.storage.sync.set({ volumes: volumes }).catch(() => {})
 
         rangeSlider();
     })
