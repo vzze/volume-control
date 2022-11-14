@@ -1,4 +1,7 @@
 {
+    "background": {
+        "scripts": ["background.js"]
+    },
     "manifest_version": 2,
     "name": "Volume",
     "version": "1.1",
