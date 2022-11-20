@@ -4,7 +4,7 @@
     },
     "manifest_version": 2,
     "name": "Volume",
-    "version": "1.7",
+    "version": "1.8",
 
     "description": "Volume control.",
 
