@@ -1,7 +1,10 @@
-browser.tabs.onRemoved.addListener(async function(tabId){
-    let volumes = await browser.storage.sync.get("volumes").catch(() => {})
-    if(!volumes) return;
-    if(!volumes[tabId]) return;
-    delete volumes[tabId]
-    browser.storage.sync.set({ volumes: volumes })
+browser.tabs.onRemoved.addListener(async tabId => {
+    let data = await browser.storage.sync.get("volumes").catch(() => {});
+
+    if(!data) return;
+    if(!data.volumes) return;
+    if(!data.volumes[tabId]) return;
+
+    delete data.volumes[tabId];
+    browser.storage.sync.set({ volumes: data.volumes });
 })
