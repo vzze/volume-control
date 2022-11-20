@@ -2,11 +2,12 @@
     "background": {
         "scripts": ["background.js"]
     },
+
     "manifest_version": 2,
     "name": "Volume",
-    "version": "1.8",
+    "version": "1.9",
 
-    "description": "Volume control.",
+    "description": "Control the volume of each tab.",
 
     "browser_specific_settings": {
         "gecko": {

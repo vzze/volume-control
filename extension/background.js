@@ -1,3 +1,5 @@
+const storage = (browser.storage.session) ? browser.storage.session : browser.storage.sync;
+
 browser.tabs.onRemoved.addListener(async tabId => {
     let data = await browser.storage.sync.get("volumes").catch(() => {});
 
@@ -6,5 +8,5 @@ browser.tabs.onRemoved.addListener(async tabId => {
     if(!data.volumes[tabId]) return;
 
     delete data.volumes[tabId];
-    browser.storage.sync.set({ volumes: data.volumes });
+    storage.set({ volumes: data.volumes }).catch(() => {});
 })

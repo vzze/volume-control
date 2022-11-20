@@ -5,9 +5,9 @@ let request_handler = true;
 const storage = (browser.storage.session) ? browser.storage.session : browser.storage.sync;
 
 const rangeSlider = () => {
-    const slider = $('.range-slider');
-    const range  = $('.range-slider__range');
-    const value  = $('.range-slider__value');
+    const slider = $('.Slider');
+    const range  = $('.SliderRange');
+    const value  = $('.SliderValue');
 
     slider.each(function() {
         value.each(function() {
@@ -24,8 +24,8 @@ const rangeSlider = () => {
 
             setTimeout(async () => {
                 await browser.tabs.executeScript(Number(this.id), {
-                    code: `document.querySelectorAll("video, audio").forEach( elem => elem.volume = ${this.value / 100} );`
-                }).catch(() => { request_handler = true; return; })
+                    code: `document.querySelectorAll("video, audio").forEach(elem => elem.volume = ${this.value / 100})`
+                }).catch(() => { request_handler = true; return; });
 
                 volumes[this.id] = Number(this.value);
                 await storage.set({ volumes: volumes });
@@ -36,11 +36,13 @@ const rangeSlider = () => {
 };
 
 const createLiEl = (tabTitle, tabId) => {
-    let div = document.createElement("div");
-    div.className = "range-slider";
+    const div = document.createElement("div");
 
-    let range = document.createElement("input");
-    range.className = "range-slider__range";
+    div.className = "Slider";
+
+    const range = document.createElement("input");
+
+    range.className = "SliderRange";
     range.value     = volumes[tabId];
     range.type      = "range";
     range.id        = tabId;
@@ -48,7 +50,8 @@ const createLiEl = (tabTitle, tabId) => {
     range.min       = '0';
     range.step      = '1';
 
-    let title = document.createElement("a");
+    const title = document.createElement("a");
+
     if(tabTitle.length > 20)
         tabTitle = tabTitle.slice(0, 17) + "...";
     else
@@ -56,9 +59,10 @@ const createLiEl = (tabTitle, tabId) => {
 
     title.text = tabTitle;
 
-    let span = document.createElement("a");
+    const span = document.createElement("a");
+
     span.text = String(volumes[tabId]);
-    span.className = "range-slider__value";
+    span.className = "SliderValue";
 
     div.appendChild(title);
     div.appendChild(range);
@@ -69,12 +73,12 @@ const createLiEl = (tabTitle, tabId) => {
 
 (async () => {
     const data = await storage.get("volumes").catch(() => {});
-    await storage.clear().catch(() => {});
-
     const main = await browser.windows.getCurrent().catch(() => {});
     const tabs = await browser.tabs.query({}).catch(() => {});
 
-    let list = document.getElementById("tbs");
+    await storage.clear().catch(() => {});
+
+    const list = document.getElementById("tbs");
 
     if(data.volumes) volumes = data.volumes;
 
@@ -93,15 +97,18 @@ const createLiEl = (tabTitle, tabId) => {
 
         if(volumes[`${tab.id}`] == undefined) volumes[tab.id] = 100;
 
-        let newLi = document.createElement("li");
+        const newLi = document.createElement("li");
+
         newLi.appendChild(createLiEl(tab.title, tab.id));
         list.appendChild(newLi);
-    }));
+    })).catch(() => {});
 
     if(!atLeastOne) {
         const a = document.createElement("a");
-        a.text = "No tabs with audio open."
-        a.style.paddingRight = "30px"
+
+        a.text  = "No tabs with audio open.";
+        a.style.paddingRight = "30px";
+
         list.appendChild(
             document.createElement("li").appendChild(a)
         );

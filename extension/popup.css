@@ -29,16 +29,16 @@ input[type=range]:focus {
     outline: none;
 }
 
-.range-slider {
+.Slider {
     margin: 10px 0 0 0;
 }
 
-.range-slider__range {
+.SliderRange {
     margin-left: 10px;
     float: right;
 }
 
-.range-slider__value {
+.SliderValue {
     display: inline-block;
     position: absolute;
 
