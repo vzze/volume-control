@@ -4,8 +4,8 @@
     },
 
     "manifest_version": 2,
-    "name": "Volume",
-    "version": "1.9",
+    "name": "Volume Control",
+    "version": "2.0",
 
     "description": "Control the volume of each tab.",
 
