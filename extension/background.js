@@ -5,9 +5,9 @@ browser.tabs.onRemoved.addListener(async tabId => {
 
     if(!data) return;
     if(!data.volumes) return;
-    if(!data.volumes[`${tabId}`]) return;
+    if(!data.volumes[tabId]) return;
 
-    delete data.volumes[`${tabId}`];
+    delete data.volumes[tabId];
 
     await storage.set({ volumes: data.volumes }).catch(() => {});
 })

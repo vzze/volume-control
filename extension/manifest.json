@@ -5,7 +5,7 @@
 
     "manifest_version": 2,
     "name": "Volume Control",
-    "version": "2.0",
+    "version": "2.1",
 
     "description": "Control the volume of each tab.",
 
@@ -26,6 +26,7 @@
         "browser_style": true,
         "default_popup": "popup.html"
     },
+
     "permissions": [
         "tabs",
         "<all_urls>",

@@ -1,8 +1,40 @@
 let volumes = {}
 
-let request_handler = true;
-
 const storage = (browser.storage.session) ? browser.storage.session : browser.storage.sync;
+
+const throttle = (callback, delay) => {
+    let shouldWait = false;
+    let waitingArgs = undefined;
+
+    const timeoutFunc = () => {
+        if(waitingArgs == undefined) {
+            shouldWait = false;
+        } else {
+            callback(...waitingArgs);
+            waitingArgs = undefined;
+            setTimeout(timeoutFunc, delay);
+        }
+    }
+
+    return (...args) => {
+        if(shouldWait) {
+            waitingArgs = args;
+        } else {
+            callback(...args);
+            shouldWait = true;
+            setTimeout(timeoutFunc, delay);
+        }
+    }
+}
+
+const updateRange = throttle(async (id, value) => {
+    await browser.tabs.executeScript(id, {
+        code: `document.querySelectorAll("video, audio").forEach(elem => elem.volume = ${value / 100})`
+    }).catch(() => { return; });
+
+    volumes[id] = value;
+    await storage.set({ volumes: volumes }).catch(() => {});
+}, 50);
 
 const rangeSlider = () => {
     const slider = $('.Slider');
@@ -19,21 +51,10 @@ const rangeSlider = () => {
         range.on('input', function() {
             $(this).next(value).html(this.value);
 
-            if(!request_handler) return;
-            else request_handler = false;
-
-            setTimeout(async () => {
-                await browser.tabs.executeScript(Number(this.id), {
-                    code: `document.querySelectorAll("video, audio").forEach(elem => elem.volume = ${this.value / 100})`
-                }).catch(() => { request_handler = true; return; });
-
-                volumes[this.id] = Number(this.value);
-                await storage.set({ volumes: volumes });
-                request_handler = true;
-            }, 50);
+            updateRange(Number(this.id), Number(this.value));
         });
     });
-};
+}
 
 const createLiEl = (tabTitle, tabId) => {
     const div = document.createElement("div");
@@ -45,7 +66,7 @@ const createLiEl = (tabTitle, tabId) => {
     range.className = "SliderRange";
     range.value     = volumes[tabId];
     range.type      = "range";
-    range.id        = tabId;
+    range.id        = String(tabId);
     range.max       = "100";
     range.min       = '0';
     range.step      = '1';
@@ -95,11 +116,11 @@ const createLiEl = (tabTitle, tabId) => {
 
         atLeastOne = true;
 
-        if(volumes[`${tab.id}`] == undefined) volumes[tab.id] = 100;
+        if(volumes[Number(tab.id)] == undefined) volumes[Number(tab.id)] = 100;
 
         const newLi = document.createElement("li");
 
-        newLi.appendChild(createLiEl(tab.title, tab.id));
+        newLi.appendChild(createLiEl(tab.title, Number(tab.id)));
         list.appendChild(newLi);
     })).catch(() => {});
 
