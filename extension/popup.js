@@ -41,17 +41,17 @@ const rangeSlider = () => {
     const range  = $('.SliderRange');
     const value  = $('.SliderValue');
 
-    slider.each(function() {
-        value.each(function() {
-            $(this).html(
-                $(this).prev().attr('value')
+    slider.each(() => {
+        value.each(({ currentTarget }) => {
+            $(currentTarget).html(
+                $(currentTarget).prev().attr('value')
             );
         });
 
-        range.on('input', function() {
-            $(this).next(value).html(this.value);
+        range.on('input', ({ currentTarget }) => {
+            $(currentTarget).next(value).html(currentTarget.value);
 
-            updateRange(Number(this.id), Number(this.value));
+            updateRange(Number(currentTarget.id), Number(currentTarget.value));
         });
     });
 }
