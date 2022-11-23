@@ -33,6 +33,7 @@ const updateRange = throttle(async (id, value) => {
     }).catch(() => { return; });
 
     volumes[id] = value;
+
     await storage.set({ volumes: volumes }).catch(() => {});
 }, 50);
 
