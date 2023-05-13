@@ -44,7 +44,7 @@ const rangeSlider = () => {
 
     slider.forEach(() => {
         value.forEach((currentTarget) => {
-            currentTarget.innerHTML = currentTarget.previousElementSibling.getAttribute('value');
+            currentTarget.innerHTML = currentTarget.previousElementSibling.value;
         });
 
         ranges.forEach((range) => {
