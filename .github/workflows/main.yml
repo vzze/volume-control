@@ -1,7 +1,8 @@
 name: Make ZIP CI
 
 on: [push, pull_request]
-
+permissions:
+  contents: write
 jobs:
   bundle-zip:
     runs-on: ubuntu-latest
