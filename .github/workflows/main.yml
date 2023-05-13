@@ -1,0 +1,39 @@
+name: Make ZIP CI
+
+on: [push, pull_request]
+permissions:
+  contents: write
+jobs:
+  bundle-zip:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install zip
+      run: sudo apt install zip
+    - name: Make executable
+      run: chmod +x ./build.sh
+    - name: Make zip
+      run: ./build.sh
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: VolumeControl
+        path: extension.zip
+    - name: Set Tag Name
+      id: set-tag
+      run: echo "::set-output name=tag_name::$(git rev-parse --short "$GITHUB_SHA")"
+    # - uses: EndBug/latest-tag@latest
+    #   id: "tag_create"
+    #   with:
+    #     tag-name: "devbuild"
+    - name: Create Dev release
+      run: | 
+        if ! gh release view devbuild 2>/dev/null; then gh release create devbuild --verify-tag; fi
+        gh release upload devbuild --clobber extension.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Publish Dev release
+      run: gh release edit devbuild --title "DevBuild $RELEASE_TAG"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        RELEASE_TAG: ${{ steps.set-tag.outputs.tag_name }}
