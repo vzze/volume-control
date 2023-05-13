@@ -22,10 +22,10 @@ jobs:
     - name: Set Tag Name
       id: set-tag
       run: echo "::set-output name=tag_name::$(git rev-parse --short "$GITHUB_SHA")"
-    - uses: EndBug/latest-tag@latest
-      id: "tag_create"
-      with:
-        tag-name: "devbuild"
+    # - uses: EndBug/latest-tag@latest
+    #   id: "tag_create"
+    #   with:
+    #     tag-name: "devbuild"
     - name: Create Dev release
       run: | 
         gh release create devbuild --verify-tag
