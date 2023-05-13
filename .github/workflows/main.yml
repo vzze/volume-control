@@ -1,0 +1,18 @@
+name: Make ZIP CI
+
+on: [push, pull_request]
+
+jobs:
+	bundle-zip:
+		runs-on: ubuntu-latest
+		steps:
+		- uses: actions/checkout@v3
+		- name: Install zip
+			run: sudo apt install zip
+		- name: Make zip
+			run: ./build.bat
+		- name: Upload Artifact
+			uses: actions/upload-artifact@v2
+			with:
+				name: VolumeControl
+				path: extension.zip
