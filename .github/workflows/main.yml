@@ -21,11 +21,10 @@ jobs:
     - name: Set Tag Name
       id: set-tag
       run: echo "::set-output name=tag_name::$(git rev-parse --short "$GITHUB_SHA")"
-    - uses: rickstaa/action-create-tag@v1
+    - uses: EndBug/latest-tag@latest
       id: "tag_create"
       with:
-        tag: "devbuild"
-        tag_exists_error: false
+        tag-name: "devbuild"
     - name: Create Dev release
       run: gh release upload devbuild --clobber extension.zip
       env:
