@@ -27,7 +27,9 @@ jobs:
       with:
         tag-name: "devbuild"
     - name: Create Dev release
-      run: gh release upload devbuild --clobber extension.zip
+      run: | 
+        gh release create devbuild --verify-tag
+        gh release upload devbuild --clobber extension.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Publish Dev release
