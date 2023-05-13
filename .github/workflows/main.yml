@@ -28,7 +28,7 @@ jobs:
     #     tag-name: "devbuild"
     - name: Create Dev release
       run: | 
-        if ! gh release view devbuild 2>/dev/null; then gh release create devbuild --verify-tag fi
+        if ! gh release view devbuild 2>/dev/null; then gh release create devbuild --verify-tag; fi
         gh release upload devbuild --clobber extension.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
