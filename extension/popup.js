@@ -38,21 +38,21 @@ const updateRange = throttle(async (id, value) => {
 }, 50);
 
 const rangeSlider = () => {
-    const slider = $('.Slider');
-    const range  = $('.SliderRange');
-    const value  = $('.SliderValue');
+    const slider = document.querySelectorAll('.Slider');
+    const ranges = document.querySelectorAll('.SliderRange');
+    const value = document.querySelectorAll('.SliderValue');
 
-    slider.each(() => {
-        value.each(({ currentTarget }) => {
-            $(currentTarget).html(
-                $(currentTarget).prev().attr('value')
-            );
+    slider.forEach(() => {
+        value.forEach((currentTarget) => {
+            currentTarget.innerHTML = currentTarget.previousElementSibling.getAttribute('value');
         });
 
-        range.on('input', ({ currentTarget }) => {
-            $(currentTarget).next(value).html(currentTarget.value);
+        ranges.forEach((range) => {
+            range.addEventListener('input', ({ currentTarget }) => {
+                currentTarget.nextElementSibling.innerHTML = currentTarget.value;
 
-            updateRange(Number(currentTarget.id), Number(currentTarget.value));
+                updateRange(Number(currentTarget.id), Number(currentTarget.value));
+            });
         });
     });
 }
