@@ -19,8 +19,8 @@ jobs:
         name: VolumeControl
         path: extension.zip
     - name: Set Tag Name
-        id: set-tag
-        run: echo "::set-output name=tag_name::$(git rev-parse --short "$GITHUB_SHA")"
+      id: set-tag
+      run: echo "::set-output name=tag_name::$(git rev-parse --short "$GITHUB_SHA")"
     - name: Create Dev release
       run: gh release upload devbuild --clobber extension.zip
       env:
