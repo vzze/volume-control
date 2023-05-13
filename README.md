@@ -6,4 +6,4 @@ A [Firefox extension](https://addons.mozilla.org/en-US/firefox/addon/volume-cont
     <img src="https://raw.githubusercontent.com/vzze/volume-control/main/screenshot.png">
 </p>
 
-#### Special thanks to [@pandastic](https://github.com/bandastic)
+#### Special thanks to [@pandastic](https://github.com/bandastic) and [@Davilarek](https://github.com/Davilarek)
