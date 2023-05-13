@@ -57,7 +57,7 @@ const rangeSlider = () => {
     });
 }
 
-const createLiEl = (tabTitle, tabId) => {
+const createLiEl = async (tabTitle, tabId) => {
     const div = document.createElement("div");
 
     div.className = "Slider";
@@ -86,6 +86,44 @@ const createLiEl = (tabTitle, tabId) => {
     span.text = String(volumes[tabId]);
     span.className = "SliderValue";
 
+    const pause = document.createElement("button");
+
+    pause.id = "btn" + String(tabId);
+    pause.classList.add("button");
+
+    const is_paused = await browser.tabs.executeScript(tabId, {
+        code: `
+            Array.from(document.querySelectorAll("video, audio")).reduce((n, el) => {
+                if(el.paused != undefined)
+                    if(el.paused == false)
+                        return n + 1;
+                    else
+                        return n;
+                else
+                    return n;
+            }, 0)
+        `
+    });
+
+    if(is_paused[0]) pause.textContent = "Pause  |"
+    else             pause.textContent = "Resume |"
+
+    pause.onclick = async () => {
+        const btn = document.getElementById("btn" + String(tabId));
+        if(btn.textContent == "Pause  |") {
+            await browser.tabs.executeScript(tabId, {
+                code: `document.querySelectorAll("video, audio").forEach(elem => elem.pause())`
+            }).catch(() => { return; });
+            btn.textContent = "Resume |";
+        } else {
+            await browser.tabs.executeScript(tabId, {
+                code: `document.querySelectorAll("video, audio").forEach(elem => elem.play())`
+            }).catch(() => { return; });
+            btn.textContent = "Pause  |";
+        }
+    }
+
+    div.appendChild(pause);
     div.appendChild(title);
     div.appendChild(range);
     div.appendChild(span);
@@ -121,7 +159,7 @@ const createLiEl = (tabTitle, tabId) => {
 
         const newLi = document.createElement("li");
 
-        newLi.appendChild(createLiEl(tab.title, Number(tab.id)));
+        newLi.appendChild(await createLiEl(tab.title, Number(tab.id)));
         list.appendChild(newLi);
     })).catch(() => {});
 

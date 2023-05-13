@@ -10,6 +10,23 @@ body {
     color: #FFFFFF;
 }
 
+.button {
+    border: none;
+    background: none;
+    text-align: right;
+
+    font-family: "Monofur", monospace;
+    font-size: 14px;
+
+    transition: all 500ms;
+
+    color: #d3d3d3
+}
+
+.button:hover {
+    color: #FFFFFF;
+}
+
 ul li {
     list-style: none;
 
