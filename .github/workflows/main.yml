@@ -10,7 +10,7 @@ jobs:
     - name: Install zip
       run: sudo apt install zip
     - name: Make zip
-      run: ./build.bat
+      run: ./build.sh
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
