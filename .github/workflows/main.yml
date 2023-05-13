@@ -1,6 +1,14 @@
 name: Make ZIP CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/main.yml
+      - extension/**
+      - build.sh
+
 permissions:
   contents: write
 jobs:
