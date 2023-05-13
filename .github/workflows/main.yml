@@ -18,3 +18,15 @@ jobs:
       with:
         name: VolumeControl
         path: extension.zip
+    - name: Set Tag Name
+        id: set-tag
+        run: echo "::set-output name=tag_name::$(git rev-parse --short "$GITHUB_SHA")"
+    - name: Create Dev release
+      run: gh release upload devbuild --clobber extension.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Publish Dev release
+      run: gh release edit devbuild --title "DevBuild $RELEASE_TAG"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        RELEASE_TAG: ${{ steps.set-tag.outputs.tag_name }}
