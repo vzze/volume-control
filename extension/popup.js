@@ -1,6 +1,8 @@
-let volumes = {}
+let volumes   = {}
+let nonLinearVolume = false;
 
-const storage = (browser.storage.session) ? browser.storage.session : browser.storage.sync;
+const storage     = browser.storage.session;
+const syncStorage = browser.storage.sync;
 
 const throttle = (callback, delay) => {
     let shouldWait = false;
@@ -27,9 +29,16 @@ const throttle = (callback, delay) => {
     }
 }
 
+const newVolume = (vol) => {
+    if(nonLinearVolume)
+        return (vol / 100) ** 2;
+    else
+        return (vol / 100);
+}
+
 const updateRange = throttle(async (id, value) => {
     await browser.tabs.executeScript(id, {
-        code: `document.querySelectorAll("video, audio").forEach(elem => elem.volume = ${value / 100})`
+        code: `document.querySelectorAll("video, audio").forEach(elem => elem.volume = ${newVolume(value)})`
     }).catch(() => { return; });
 
     volumes[id] = value;
@@ -110,6 +119,7 @@ const createLiEl = async (tabTitle, tabId) => {
 
     pause.onclick = async () => {
         const btn = document.getElementById("btn" + String(tabId));
+
         if(btn.textContent == "Pause  |") {
             await browser.tabs.executeScript(tabId, {
                 code: `document.querySelectorAll("video, audio").forEach(elem => elem.pause())`
@@ -131,8 +141,44 @@ const createLiEl = async (tabTitle, tabId) => {
     return div;
 }
 
+const createNonLinearButton = () => {
+    const btn = document.createElement("button");
+
+    if(nonLinearVolume)
+        btn.textContent = "Disable non-linear volume.";
+    else
+        btn.textContent = "Enable non-linear volume.";
+
+    btn.classList.add("button");
+    btn.style["font-size"] = "13px";
+
+    btn.onclick = async () => {
+        nonLinearVolume = !nonLinearVolume;
+
+        if(nonLinearVolume)
+            btn.textContent = "Disable non-linear volume.";
+        else
+            btn.textContent = "Enable non-linear volume.";
+
+        await syncStorage.set({ nonLinearVolume: nonLinearVolume }).catch(() => {});
+
+        const tabs = await browser.tabs.query({}).catch(() => {});
+
+        await Promise.all(tabs.map(async tab => {
+            if(volumes[Number(tab.id)] == undefined) return;
+
+            await browser.tabs.executeScript(tab.id, {
+                code: `document.querySelectorAll("video, audio").forEach(elem => elem.volume = ${newVolume(volumes[Number(tab.id)])})`
+            }).catch(() => { return; });
+        })).catch(() => {});
+    }
+
+    return btn;
+}
+
 (async () => {
     const data = await storage.get("volumes").catch(() => {});
+    const sync = await syncStorage.get("nonLinearVolume").catch(() => {});
     const main = await browser.windows.getCurrent().catch(() => {});
     const tabs = await browser.tabs.query({}).catch(() => {});
 
@@ -141,6 +187,7 @@ const createLiEl = async (tabTitle, tabId) => {
     const list = document.getElementById("tbs");
 
     if(data.volumes) volumes = data.volumes;
+    if(sync.nonLinearVolume) nonLinearVolume = sync.nonLinearVolume
 
     let atLeastOne = false;
 
@@ -174,6 +221,11 @@ const createLiEl = async (tabTitle, tabId) => {
         );
     }
 
+    const nonLinear = document.getElementById("non-linear");
+    nonLinear.appendChild(createNonLinearButton());
+
     await storage.set({ volumes: volumes }).catch(() => {});
+    await syncStorage.set({ nonLinearVolume: nonLinearVolume }).catch(() => {});
+
     rangeSlider();
 })();
